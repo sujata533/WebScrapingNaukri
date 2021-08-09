@@ -1,0 +1,35 @@
+from selenium import webdriver
+from bs4 import BeautifulSoup
+import pandas as pd
+from webdriver_manager.chrome import ChromeDriverManager
+driver = webdriver.Chrome(executable_path=ChromeDriverManager().install())
+jobtitle=[] #List to store name of the product
+location=[] #List to store price of the product
+salary=[]
+experience=[]
+companyname=[]
+#ratings=[] #List to store rating of the product
+driver.get("https://www.naukri.com/html-jobs-in-delhi")
+content = driver.page_source
+soup = BeautifulSoup(content)
+for a in soup.findAll('div', attrs={'class':'srp_container f1  '}):
+	jobtitle=a.find('li', attrs={'class':'desig'})
+	location=a.find('span', attrs={'class':'loc'})
+	salary=a.find('div', attrs={'class':'salary'})
+	experience=a.find('span', attrs={'class':'exp'})
+	companyname=a.find('span', attrs={'class':'org'})
+	print(jobtitle)
+	print(location)
+	print(salary)
+	print(experience)
+	print(companyname.text)
+#rating=a.find('div', attrs={'class':'hGSR34 _2beYZw'})
+	jobtitle.append(jobtitle.text)
+	location.append(location.text)
+	salary.append(salary.text)
+	experience.append(experience.text)
+	companyname.append(companyname.text)
+#ratings.append(rating.text) 
+
+df = pd.DataFrame({'jobtitle':jobtitle,'location':location,'salary':salary,'experience':experience,'companyname':companyname},index=[1,2,3,4,5]) 
+df.to_csv('jobs list.csv', index=True, encoding='utf-8')
